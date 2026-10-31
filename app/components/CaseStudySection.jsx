@@ -58,7 +58,7 @@ export default function CaseStudySection() {
   return (
     <section
       id="case-study"
-      className="relative px-4 sm:px-6 md:px-8 pb-24 sm:pb-36 paper-sheet w-full overflow-visible"
+      className="relative scroll-mt-24 pb-24 sm:pb-36 paper-sheet w-full overflow-visible"
       aria-labelledby="case-study-heading"
     >
       {/* Hand-drawn divider separating previous section */}
@@ -66,7 +66,7 @@ export default function CaseStudySection() {
 
       <div className="relative mx-auto max-w-7xl">
         {/* ── Section Header ── */}
-        <div className="flex flex-col items-center text-center mb-16 sm:mb-20 md:mb-28">
+        <div className="flex flex-col items-center text-center px-4 sm:px-6 md:px-8 mb-16 sm:mb-20 md:mb-24">
 
           {/* Small handwritten annotation: "explore my work!" */}
           <FadeUp delay={0.05}>

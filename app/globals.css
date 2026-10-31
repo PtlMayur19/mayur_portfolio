@@ -46,13 +46,12 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
 }
 
 /* ── Outer page: grey grid background ── */
 body {
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
   /* Grey grid dots */
   background-color: var(--grid-grey);
   background-image: radial-gradient(circle, rgba(255,255,255,0.22) 1px, transparent 1px);

@@ -21,195 +21,197 @@ function GithubIcon({ className = "w-4 h-4 shrink-0" }) {
 }
 
 /**
- * ProjectCard — Layered folder-shaped card with left content area
- * and right Polaroid-framed visual mockup.
+ * ProjectCard — Single project article utilizing native CSS sticky positioning
+ * on desktop with progressive folder tab alignment matching the reference.
  */
 export default function ProjectCard({ project, index, totalCards }) {
   const [imgError, setImgError] = useState(false);
   const { cardTheme } = project;
 
-  // Staggered horizontal positioning for file-folder top tabs across 4 cards
-  const tabPositions = [
-    "left-4 sm:left-6 md:left-8 lg:left-10",
-    "left-4 sm:left-32 md:left-44 lg:left-60",
-    "left-4 sm:left-auto sm:right-32 md:right-44 lg:right-60",
-    "left-4 sm:left-auto sm:right-6 md:right-8 lg:right-10",
+  // Progressive horizontal positioning for folder tabs matching reference HTML:
+  // Card 0: 0
+  // Card 1: min(calc(21% - 72px), calc(100% - 340px))
+  // Card 2: min(calc(42% - 72px), calc(100% - 340px))
+  // Card 3: min(calc(63% - 72px), calc(100% - 340px))
+  const tabMargins = [
+    "0",
+    "min(calc(21% - 72px), calc(100% - 340px))",
+    "min(calc(42% - 72px), calc(100% - 340px))",
+    "min(calc(63% - 72px), calc(100% - 340px))",
   ];
-  const tabClass = tabPositions[index % tabPositions.length];
-
-  // Subtle organic rotation for folder realism
-  const cardRotations = [
-    "-rotate-[0.4deg]",
-    "rotate-[0.4deg]",
-    "-rotate-[0.3deg]",
-    "rotate-[0.5deg]",
-  ];
-  const cardRotation = cardRotations[index % cardRotations.length];
+  const tabMargin = tabMargins[index % tabMargins.length];
 
   return (
     <article
-      className={`relative w-full rounded-2xl sm:rounded-3xl border-[2.5px] border-[var(--ink)] transition-all duration-300 ${cardRotation}`}
+      id={`project-${project.id}`}
+      className="lg:sticky lg:top-28 transition-none"
       style={{
-        backgroundColor: cardTheme.bg,
-        color: cardTheme.text,
-        boxShadow: "4px 8px 0 var(--ink), 0 20px 40px -15px rgba(26,24,22,0.35)",
+        zIndex: 10 + index * 10,
       }}
       aria-label={`${project.tabLabel}: ${project.title}`}
     >
-      {/* ── Folder Tab Protruding Above Top Edge ── */}
-      <div
-        className={`absolute -top-10 sm:-top-11 md:-top-12 ${tabClass} h-10 sm:h-11 md:h-12 px-5 sm:px-7 rounded-t-xl sm:rounded-t-2xl border-t-[2.5px] border-x-[2.5px] border-[var(--ink)] flex items-center gap-2 select-none z-10`}
-        style={{
-          backgroundColor: cardTheme.tabBg,
-          color: cardTheme.tabText,
-        }}
-      >
+      {/* ── Progressive Folder Tab ── */}
+      <div className="flex" style={{ marginLeft: tabMargin }}>
         <span
-          className="w-2 h-2 rounded-full shrink-0"
-          style={{ backgroundColor: project.dotColor }}
-          aria-hidden="true"
-        />
-        <span className="font-mono text-xs sm:text-sm font-bold tracking-widest uppercase">
+          className={`font-mono inline-flex items-center gap-2 py-3.5 pr-14 text-xs font-bold uppercase tracking-[0.2em] sm:gap-3.5 sm:py-6 sm:pr-28 sm:text-base select-none ${
+            index === 0
+              ? "pl-5 sm:pl-9 [clip-path:polygon(0_0,calc(100%-44px)_0,100%_100%,0_100%)] sm:[clip-path:polygon(0_0,calc(100%-76px)_0,100%_100%,0_100%)]"
+              : "pl-16 sm:pl-[6.75rem] [clip-path:polygon(44px_0,calc(100%-44px)_0,100%_100%,0_100%)] sm:[clip-path:polygon(76px_0,calc(100%-76px)_0,100%_100%,0_100%)]"
+          }`}
+          style={{
+            backgroundColor: cardTheme.tabBg,
+            color: cardTheme.tabText,
+          }}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="h-3 w-3 sm:h-4 sm:w-4"
+            aria-hidden="true"
+          >
+            <path d="M12 2c1 5 4 8 9 9-5 1-8 4-9 9-1-5-4-8-9-9 5-1 8-4 9-9Z" />
+          </svg>
           {project.tabLabel}
         </span>
       </div>
 
-      {/* ── Card Interior ── */}
-      <div className="p-6 sm:p-8 md:p-10 lg:p-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-
-          {/* Left Column: Project Details & Actions */}
-          <div className="lg:col-span-6 flex flex-col justify-between">
-            <div>
-              {/* Meta row: Dot + Date */}
-              <div className="flex items-center gap-2.5 font-mono text-xs sm:text-sm font-bold tracking-wider uppercase mb-3 sm:mb-4 select-none">
-                <span
-                  className="w-2.5 h-2.5 rounded-full shrink-0"
-                  style={{ backgroundColor: project.dotColor }}
-                  aria-hidden="true"
-                />
-                <span style={{ color: cardTheme.textMuted }}>{project.date}</span>
-                <span style={{ color: cardTheme.textMuted }}>·</span>
-                <span style={{ color: cardTheme.textMuted }}>INDEX {project.id}</span>
-              </div>
-
-              {/* Project Title */}
-              <h3
-                className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight uppercase leading-[0.95] mb-4 select-none"
-                style={{ color: cardTheme.text }}
-              >
-                {project.title}
-              </h3>
-
-              {/* Project Description */}
-              <p
-                className="text-sm sm:text-base lg:text-lg leading-relaxed mb-6 font-normal max-w-xl"
-                style={{ color: cardTheme.textMuted }}
-              >
-                {project.description}
-              </p>
-
-              {/* Technology Tags */}
-              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-8">
-                {project.tags.map((tag, tIdx) => {
-                  const tagRotations = [-2, 2.5, -1.5];
-                  const rot = tagRotations[tIdx % tagRotations.length];
-                  return (
-                    <span
-                      key={tag.name}
-                      className="torn-tag-sm select-none cursor-default shadow-sm transition-transform duration-200 hover:scale-105"
-                      style={{
-                        backgroundColor: tag.bg,
-                        color: tag.color,
-                        transform: `rotate(${rot}deg)`,
-                      }}
-                    >
-                      {tag.name}
-                    </span>
-                  );
-                })}
-              </div>
+      {/* ── Card Interior / Main Body ── */}
+      <div
+        className="grid grid-cols-1 gap-6 p-6 sm:p-10 lg:grid-cols-[1fr_1.1fr] lg:gap-12 lg:p-14 lg:min-h-[calc(100vh-14rem)] shadow-[0_16px_40px_-10px_rgba(26,24,22,0.35),0_4px_16px_rgba(26,24,22,0.18)]"
+        style={{
+          backgroundColor: cardTheme.bg,
+          color: cardTheme.text,
+        }}
+      >
+        {/* Left Column: Project Details & Actions */}
+        <div className="flex flex-col justify-between">
+          <div>
+            {/* Meta row: Dot + Date */}
+            <div className="flex items-center gap-2.5 font-mono text-xs sm:text-sm font-bold tracking-wider uppercase mb-3 sm:mb-4 select-none">
+              <span
+                className="w-2.5 h-2.5 rounded-full shrink-0"
+                style={{ backgroundColor: project.dotColor }}
+                aria-hidden="true"
+              />
+              <span style={{ color: cardTheme.textMuted }}>{project.date}</span>
+              <span style={{ color: cardTheme.textMuted }}>·</span>
+              <span style={{ color: cardTheme.textMuted }}>INDEX {project.id}</span>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2">
-              {/* Primary: VIEW PROJECT */}
+            {/* Project Title */}
+            <h3
+              className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight uppercase leading-[0.95] mb-4 select-none"
+              style={{ color: cardTheme.text }}
+            >
+              {project.title}
+            </h3>
+
+            {/* Project Description */}
+            <p
+              className="text-sm sm:text-base lg:text-lg leading-relaxed mb-6 font-normal max-w-xl"
+              style={{ color: cardTheme.textMuted }}
+            >
+              {project.description}
+            </p>
+
+            {/* Technology Tags */}
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-8">
+              {project.tags.map((tag, tIdx) => {
+                const tagRotations = [-2, 2.5, -1.5];
+                const rot = tagRotations[tIdx % tagRotations.length];
+                return (
+                  <span
+                    key={tag.name}
+                    className="torn-tag-sm select-none cursor-default shadow-sm transition-transform duration-200 hover:scale-105"
+                    style={{
+                      backgroundColor: tag.bg,
+                      color: tag.color,
+                      transform: `rotate(${rot}deg)`,
+                    }}
+                  >
+                    {tag.name}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2">
+            {/* Primary: VIEW PROJECT */}
+            <a
+              href={project.projectUrl}
+              className="inline-flex items-center gap-2.5 px-5 py-3 border-[2.5px] border-[var(--ink)] font-mono text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3px_4px_0_var(--ink)] active:translate-y-0"
+              style={{
+                backgroundColor: cardTheme.buttonBg,
+                color: cardTheme.buttonText,
+              }}
+            >
+              VIEW PROJECT
+              <ExternalLink className="w-4 h-4 shrink-0" aria-hidden="true" />
+            </a>
+
+            {/* Secondary: GITHUB */}
+            {project.githubUrl && (
               <a
-                href={project.projectUrl}
-                className="inline-flex items-center gap-2.5 px-5 py-3 border-[2.5px] border-[var(--ink)] font-mono text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3px_4px_0_var(--ink)] active:translate-y-0"
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-3 border-2 font-mono text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-200 hover:-translate-y-0.5 hover:bg-black/10 active:translate-y-0"
                 style={{
-                  backgroundColor: cardTheme.buttonBg,
-                  color: cardTheme.buttonText,
+                  borderColor: cardTheme.outlineColor,
+                  color: cardTheme.text,
                 }}
               >
-                VIEW PROJECT
-                <ExternalLink className="w-4 h-4 shrink-0" aria-hidden="true" />
+                <GithubIcon className="w-4 h-4 shrink-0" />
+                GITHUB
               </a>
-
-              {/* Secondary: GITHUB */}
-              {project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-3 border-2 font-mono text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-200 hover:-translate-y-0.5 hover:bg-black/10 active:translate-y-0"
-                  style={{
-                    borderColor: cardTheme.outlineColor,
-                    color: cardTheme.text,
-                  }}
-                >
-                  <GithubIcon className="w-4 h-4 shrink-0" />
-                  GITHUB
-                </a>
-              )}
-            </div>
+            )}
           </div>
+        </div>
 
-          {/* Right Column: Polaroid Visual Frame with Tape */}
-          <div className="lg:col-span-6 flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-lg transition-transform duration-300 hover:scale-[1.02] hover:rotate-0">
-              
-              {/* Translucent Corner Washi Tapes */}
-              <div
-                className={`absolute -top-3.5 -left-3 sm:-left-4 z-20 tape tape-${cardTheme.tapeLeft}`}
-                style={{ transform: "rotate(-16deg)" }}
-                aria-hidden="true"
-              />
-              <div
-                className={`absolute -top-3.5 -right-3 sm:-right-4 z-20 tape tape-${cardTheme.tapeRight}`}
-                style={{ transform: "rotate(14deg)" }}
-                aria-hidden="true"
-              />
+        {/* Right Column: Polaroid Visual Frame with Tape */}
+        <div className="lg:self-center flex justify-center lg:justify-end">
+          <div className="relative w-full max-w-lg transition-transform duration-300 hover:scale-[1.02]">
+            {/* Translucent Corner Washi Tapes */}
+            <span
+              className={`absolute -top-3.5 -left-3 sm:-left-4 z-20 tape tape-${cardTheme.tapeLeft}`}
+              style={{ transform: "rotate(-16deg)" }}
+              aria-hidden="true"
+            />
+            <span
+              className={`absolute -top-3.5 -right-3 sm:-right-4 z-20 tape tape-${cardTheme.tapeRight}`}
+              style={{ transform: "rotate(14deg)" }}
+              aria-hidden="true"
+            />
 
-              {/* Polaroid Frame */}
-              <figure className="bg-white p-3 sm:p-4 pb-6 sm:pb-8 rounded-[2px] shadow-[0_12px_28px_rgba(0,0,0,0.28)] border border-black/10">
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[2px] bg-[#0E172A]">
-                  {!imgError ? (
-                    <Image
-                      src={project.image}
-                      alt={project.imageAlt}
-                      fill
-                      sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 540px"
-                      className="object-cover transition-transform duration-500 hover:scale-105"
-                      onError={() => setImgError(true)}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-stone-800 to-stone-900 text-white">
-                      <span className="font-display text-4xl mb-2 text-amber-400">✦</span>
-                      <p className="font-mono text-xs uppercase tracking-wider font-bold">
-                        {project.title} MOCKUP
-                      </p>
-                    </div>
-                  )}
-                </div>
+            {/* Polaroid Frame */}
+            <figure className="bg-white p-3 sm:p-4 pb-6 sm:pb-8 rounded-[2px] shadow-[0_12px_28px_rgba(0,0,0,0.28)] border border-black/10">
+              <div className="relative aspect-square sm:aspect-[16/10] lg:aspect-auto lg:h-[calc(100vh-21rem)] w-full overflow-hidden rounded-[2px] bg-[#0E172A]">
+                {!imgError ? (
+                  <Image
+                    src={project.image}
+                    alt={project.imageAlt}
+                    fill
+                    sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 540px"
+                    className="object-cover transition-transform duration-500 hover:scale-105"
+                    onError={() => setImgError(true)}
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-stone-800 to-stone-900 text-white">
+                    <span className="font-display text-4xl mb-2 text-amber-400">✦</span>
+                    <p className="font-mono text-xs uppercase tracking-wider font-bold">
+                      {project.title} MOCKUP
+                    </p>
+                  </div>
+                )}
+              </div>
 
-                <figcaption className="font-hand text-center text-sm sm:text-base text-stone-600 mt-2.5 font-medium select-none">
-                  {project.imageCaption}
-                </figcaption>
-              </figure>
-            </div>
+              <figcaption className="font-hand text-center text-sm sm:text-base text-stone-600 mt-2.5 font-medium select-none">
+                {project.imageCaption}
+              </figcaption>
+            </figure>
           </div>
-
         </div>
       </div>
     </article>
