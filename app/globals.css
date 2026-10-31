@@ -1,26 +1,305 @@
 @import "tailwindcss";
+@source "./**/*.{js,jsx}";
+@source "./components/**/*.{js,jsx}";
 
+/* ============================================================
+   DESIGN SYSTEM — Mayur Patel Portfolio
+   Scrapbook / Notebook aesthetic
+   ============================================================ */
+
+/* ── Color tokens ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper:       #FBF7EC;
+  --ink:         #1A1816;
+  --yellow:      #F2C444;
+  --yellow-soft: #F5D76E;
+  --pink:        #F2569B;
+  --blue:        #2B4FD8;
+  --green:       #1FA463;
+  --lavender:    #B9A7F0;
+  --orange:      #F26B3A;
+  --grid-grey:   #8A8A8A;
+  --tape-cyan:   #A8E8E8;
+  --tape-yellow: #F5D76E;
+  --tape-pink:   #FFB3D1;
 }
 
+/* ── Tailwind v4 theme tokens ── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper:    var(--paper);
+  --color-ink:      var(--ink);
+  --color-yellow:   var(--yellow);
+  --color-pink:     var(--pink);
+  --color-blue:     var(--blue);
+  --color-green:    var(--green);
+  --color-lavender: var(--lavender);
+  --color-orange:   var(--orange);
+
+  --font-display: var(--font-pixel);
+  --font-hand:    var(--font-hand);
+  --font-body:    var(--font-body);
+  --font-mono:    var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
+/* ── Outer page: grey grid background ── */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Grey grid dots */
+  background-color: var(--grid-grey);
+  background-image: radial-gradient(circle, rgba(255,255,255,0.22) 1px, transparent 1px);
+  background-size: 28px 28px;
+  color: var(--ink);
+  font-family: var(--font-body), Inter, sans-serif;
+}
+
+/* ── Centered "notebook paper" sheet ── */
+.paper-sheet {
+  background-color: var(--paper);
+  /* Horizontal ruled lines */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 31px,
+    rgba(26,24,22,0.07) 31px,
+    rgba(26,24,22,0.07) 32px
+  );
+}
+
+/* ── Typography helpers ── */
+.font-display {
+  font-family: var(--font-pixel), 'Pixelify Sans', monospace;
+  letter-spacing: -0.02em;
+}
+.font-hand {
+  font-family: var(--font-hand), 'Caveat', cursive;
+  font-weight: 500;
+}
+.font-mono-label {
+  font-family: var(--font-mono), 'Space Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ── Hand-drawn orange frame (name box) ── */
+.doodle-frame {
+  border: 3px solid var(--orange);
+  /* Slightly irregular radius for hand-drawn feel */
+  border-radius: 2px 8px 4px 10px / 10px 2px 8px 4px;
+  position: relative;
+}
+/* Four corner handle squares */
+.doodle-frame .corner-tl,
+.doodle-frame .corner-tr,
+.doodle-frame .corner-bl,
+.doodle-frame .corner-br {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--orange);
+  border-radius: 1px;
+}
+.doodle-frame .corner-tl { top: -5px;    left: -5px; }
+.doodle-frame .corner-tr { top: -5px;    right: -5px; }
+.doodle-frame .corner-bl { bottom: -5px; left: -5px; }
+.doodle-frame .corner-br { bottom: -5px; right: -5px; }
+
+/* ── Tape strip ── */
+.tape {
+  display: block;
+  height: 20px;
+  width: 80px;
+  border-radius: 2px;
+  opacity: 0.75;
+  box-shadow: 0 1px 3px rgba(26,24,22,0.15);
+}
+.tape-cyan   { background-color: var(--tape-cyan); }
+.tape-yellow { background-color: var(--tape-yellow); }
+.tape-pink   { background-color: var(--tape-pink); }
+
+/* ── Polaroid card ── */
+.polaroid {
+  background: #fff;
+  padding: 10px 10px 32px;
+  box-shadow: 0 6px 18px rgba(26,24,22,0.22);
+  position: relative;
+}
+.polaroid figcaption {
+  font-family: var(--font-hand), 'Caveat', cursive;
+  font-size: 1.05rem;
+  color: rgba(26,24,22,0.65);
+  text-align: center;
+  margin-top: 6px;
+  line-height: 1.2;
+}
+
+/* ── Torn-edge tags (clip-path zig-zag) ── */
+.torn-tag {
+  clip-path: polygon(
+    2% 6%, 12% 0%, 25% 4%, 40% 1%, 55% 5%, 70% 0%, 85% 4%, 98% 1%,
+    96% 15%, 100% 30%, 97% 45%, 100% 60%, 96% 75%, 99% 90%, 97% 98%,
+    85% 96%, 70% 100%, 55% 96%, 40% 100%, 25% 95%, 12% 100%, 3% 97%,
+    1% 85%, 4% 70%, 0% 55%, 3% 40%, 0% 25%, 2% 12%
+  );
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 24px;
+  min-height: 46px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  filter: drop-shadow(2px 3px 4px rgba(26,24,22,0.18));
+  user-select: none;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+.torn-tag:hover {
+  transform: scale(1.06) rotate(0deg) !important;
+}
+.torn-tag-sm {
+  clip-path: polygon(
+    2% 6%, 12% 0%, 25% 4%, 40% 1%, 55% 5%, 70% 0%, 85% 4%, 98% 1%,
+    96% 15%, 100% 30%, 97% 45%, 100% 60%, 96% 75%, 99% 90%, 97% 98%,
+    85% 96%, 70% 100%, 55% 96%, 40% 100%, 25% 95%, 12% 100%, 3% 97%,
+    1% 85%, 4% 70%, 0% 55%, 3% 40%, 0% 25%, 2% 12%
+  );
+  display: inline-flex;
+  align-items: center;
+  padding: 0 18px;
+  height: 40px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: var(--font-mono), 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── Sticker pill (rounded, white border) ── */
+.sticker-pill {
+  border: 3px solid #fff;
+  border-radius: 9999px;
+  padding: 6px 18px;
+  font-family: var(--font-mono), 'Space Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  box-shadow: 0 4px 10px rgba(26,24,22,0.25);
+}
+
+/* ── Sticky note ── */
+.sticky-note {
+  padding: 14px 18px;
+  font-family: var(--font-hand), 'Caveat', cursive;
+  font-size: 1.05rem;
+  box-shadow: 2px 3px 8px rgba(26,24,22,0.18);
+}
+
+/* ── CTA: dark filled button ── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ink);
+  color: #fff;
+  border: 2px solid var(--ink);
+  font-family: var(--font-mono), 'Space Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 10px 24px 10px 10px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  background: transparent;
+  color: var(--ink);
+}
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue);
+  color: #fff;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.btn-primary:hover .btn-icon {
+  background: var(--pink);
+}
+
+/* ── CTA: outlined button ── */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  font-family: var(--font-mono), 'Space Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.btn-outline:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* ── Animations ── */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.spin-slow { animation: spin-slow 8s linear infinite; }
+
+@keyframes float-l {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50%       { transform: translateY(-10px) rotate(-6deg); }
+}
+@keyframes float-r {
+  0%, 100% { transform: translateY(0) rotate(6deg); }
+  50%       { transform: translateY(-12px) rotate(6deg); }
+}
+.float-l { animation: float-l 4s ease-in-out infinite; }
+.float-r { animation: float-r 4.5s ease-in-out infinite; }
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar       { width: 8px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: rgba(26,24,22,0.2); border-radius: 4px; }
+
+/* ── Focus ring ── */
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
