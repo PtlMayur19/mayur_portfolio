@@ -53,11 +53,10 @@ export default function ProjectCard({ project, index, totalCards }) {
       {/* ── Progressive Folder Tab ── */}
       <div className="flex" style={{ marginLeft: tabMargin }}>
         <span
-          className={`font-mono inline-flex items-center gap-2 py-3.5 pr-14 text-xs font-bold uppercase tracking-[0.2em] sm:gap-3.5 sm:py-6 sm:pr-28 sm:text-base select-none ${
-            index === 0
-              ? "pl-5 sm:pl-9 [clip-path:polygon(0_0,calc(100%-44px)_0,100%_100%,0_100%)] sm:[clip-path:polygon(0_0,calc(100%-76px)_0,100%_100%,0_100%)]"
-              : "pl-16 sm:pl-[6.75rem] [clip-path:polygon(44px_0,calc(100%-44px)_0,100%_100%,0_100%)] sm:[clip-path:polygon(76px_0,calc(100%-76px)_0,100%_100%,0_100%)]"
-          }`}
+          className={`font-mono inline-flex items-center gap-2 py-3.5 pr-14 text-xs font-bold uppercase tracking-[0.2em] sm:gap-3.5 sm:py-6 sm:pr-28 sm:text-base select-none ${index === 0
+            ? "pl-5 sm:pl-9 [clip-path:polygon(0_0,calc(100%-44px)_0,100%_100%,0_100%)] sm:[clip-path:polygon(0_0,calc(100%-76px)_0,100%_100%,0_100%)]"
+            : "pl-16 sm:pl-[6.75rem] [clip-path:polygon(44px_0,calc(100%-44px)_0,100%_100%,0_100%)] sm:[clip-path:polygon(76px_0,calc(100%-76px)_0,100%_100%,0_100%)]"
+            }`}
           style={{
             backgroundColor: cardTheme.tabBg,
             color: cardTheme.tabText,
@@ -77,7 +76,7 @@ export default function ProjectCard({ project, index, totalCards }) {
 
       {/* ── Card Interior / Main Body ── */}
       <div
-        className="grid grid-cols-1 gap-6 p-6 sm:p-10 lg:grid-cols-[1fr_1.1fr] lg:gap-12 lg:p-14 lg:min-h-[calc(100vh-14rem)] shadow-[0_16px_40px_-10px_rgba(26,24,22,0.35),0_4px_16px_rgba(26,24,22,0.18)]"
+        className="grid grid-cols-1 gap-6 p-6 sm:p-10 lg:grid-cols-[0.78fr_1fr] lg:gap-8 lg:px-14 lg:py-12 lg:min-h-[580px] xl:min-h-[600px] shadow-[0_16px_40px_-10px_rgba(26,24,22,0.35),0_4px_16px_rgba(26,24,22,0.18)]"
         style={{
           backgroundColor: cardTheme.bg,
           color: cardTheme.text,
@@ -108,14 +107,14 @@ export default function ProjectCard({ project, index, totalCards }) {
 
             {/* Project Description */}
             <p
-              className="text-sm sm:text-base lg:text-lg leading-relaxed mb-6 font-normal max-w-xl"
+              className="text-sm sm:text-base lg:text-lg leading-relaxed mb-5 font-normal max-w-xl"
               style={{ color: cardTheme.textMuted }}
             >
               {project.description}
             </p>
 
             {/* Technology Tags */}
-            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-8">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-4 lg:mb-0">
               {project.tags.map((tag, tIdx) => {
                 const tagRotations = [-2, 2.5, -1.5];
                 const rot = tagRotations[tIdx % tagRotations.length];
@@ -172,7 +171,7 @@ export default function ProjectCard({ project, index, totalCards }) {
 
         {/* Right Column: Polaroid Visual Frame with Tape */}
         <div className="lg:self-center flex justify-center lg:justify-end">
-          <div className="relative w-full max-w-lg transition-transform duration-300 hover:scale-[1.02]">
+          <div className="relative w-full max-w-[720px] transition-transform duration-300 hover:scale-[1.02]">
             {/* Translucent Corner Washi Tapes */}
             <span
               className={`absolute -top-3.5 -left-3 sm:-left-4 z-20 tape tape-${cardTheme.tapeLeft}`}
@@ -187,7 +186,7 @@ export default function ProjectCard({ project, index, totalCards }) {
 
             {/* Polaroid Frame */}
             <figure className="bg-white p-3 sm:p-4 pb-6 sm:pb-8 rounded-[2px] shadow-[0_12px_28px_rgba(0,0,0,0.28)] border border-black/10">
-              <div className="relative aspect-square sm:aspect-[16/10] lg:aspect-auto lg:h-[calc(100vh-21rem)] w-full overflow-hidden rounded-[2px] bg-[#0E172A]">
+              <div className="relative aspect-square sm:aspect-[16/10] lg:aspect-[4/3] w-full overflow-hidden rounded-[2px] bg-[#0E172A]">
                 {!imgError ? (
                   <Image
                     src={project.image}

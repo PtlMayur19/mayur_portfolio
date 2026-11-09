@@ -13,7 +13,7 @@ import ProjectCard from "./ProjectCard";
  */
 export default function ProjectStack({ projects }) {
   return (
-    <div className="flex flex-col gap-16 px-4 sm:px-8 lg:px-20 lg:gap-[12vh]">
+    <div className="flex flex-col gap-16 px-4 sm:px-6 lg:px-[4.7vw] lg:gap-[12vh]">
       {projects.map((project, index) => (
         <ProjectCard
           key={project.id}

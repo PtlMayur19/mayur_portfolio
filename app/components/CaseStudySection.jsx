@@ -58,13 +58,13 @@ export default function CaseStudySection() {
   return (
     <section
       id="case-study"
-      className="relative scroll-mt-24 pb-24 sm:pb-36 paper-sheet w-full overflow-visible"
+      className="relative scroll-mt-24 pb-28 sm:pb-36 lg:pb-48 paper-sheet w-full overflow-visible"
       aria-labelledby="case-study-heading"
     >
       {/* Hand-drawn divider separating previous section */}
       <CurvedDivider />
 
-      <div className="relative mx-auto max-w-7xl">
+      <div className="relative mx-auto w-full">
         {/* ── Section Header ── */}
         <div className="flex flex-col items-center text-center px-4 sm:px-6 md:px-8 mb-16 sm:mb-20 md:mb-24">
 

@@ -270,6 +270,21 @@ body {
 }
 .spin-slow { animation: spin-slow 8s linear infinite; }
 
+/* ── Smiley Blink Animation ── */
+@keyframes ca-blink {
+  0%, 91%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.12); }
+}
+.ca-blink {
+  transform-origin: 50% 89px;
+  animation: 4.4s ease-in-out infinite ca-blink;
+}
+
+/* ── Doodle Box for Large Yellow Card ── */
+.ca-doodle-box {
+  border-radius: 255px 15px 225px / 15px 225px 15px 255px;
+}
+
 @keyframes float-l {
   0%, 100% { transform: translateY(0) rotate(-6deg); }
   50%       { transform: translateY(-10px) rotate(-6deg); }
