@@ -1,8 +1,11 @@
 "use client";
 
 import { siteData } from "../../data/site";
+import { useInversionLens } from "./useInversionLens";
+import InversionLens from "./InversionLens";
 
 export default function ContactSection() {
+  const { lensRef, onMouseMove } = useInversionLens([3, 97]);
   const email = siteData.socials?.email || "hello@mayurpatel.dev";
   const emailHref = email.startsWith("mailto:") ? email : `mailto:${email}`;
 
@@ -12,7 +15,10 @@ export default function ContactSection() {
       className="relative scroll-mt-24 paper-sheet w-full overflow-hidden"
       aria-labelledby="contact-heading"
     >
-      <div className="group/talk relative mx-auto flex max-w-3xl flex-col items-center gap-5 px-4 pb-4 pt-16 text-center sm:gap-6 sm:pt-20">
+      <div
+        className="group/talk relative mx-auto flex max-w-3xl flex-col items-center gap-5 px-4 pb-4 pt-16 text-center sm:gap-6 sm:pt-20"
+        onMouseMove={onMouseMove}
+      >
         {/* ── B. Smiley Illustration ── */}
         <div className="select-none">
           <svg
@@ -91,15 +97,10 @@ export default function ContactSection() {
         </div>
 
         {/* Interactive scrapbook reticle appearing on hover over the talk group */}
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-1/2 z-30 hidden h-72 w-72 -translate-x-1/2 -translate-y-1/2 scale-[0.35] opacity-0 transition-[opacity,scale] duration-300 ease-out [backdrop-filter:invert(1)] group-hover/talk:scale-100 group-hover/talk:opacity-100 lg:block"
-        >
-          <span className="absolute -left-2 -top-2 h-4 w-4 bg-[var(--ink)]" />
-          <span className="absolute -right-2 -top-2 h-4 w-4 bg-[var(--ink)]" />
-          <span className="absolute -bottom-2 -left-2 h-4 w-4 bg-[var(--ink)]" />
-          <span className="absolute -bottom-2 -right-2 h-4 w-4 bg-[var(--ink)]" />
-        </span>
+        <InversionLens
+          lensRef={lensRef}
+          groupHoverClass="group-hover/talk:scale-100 group-hover/talk:opacity-100"
+        />
       </div>
 
       {/* ── E. Large Yellow Contact Card ── */}

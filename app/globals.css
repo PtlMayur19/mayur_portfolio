@@ -317,3 +317,23 @@ body {
   outline-offset: 3px;
   border-radius: 2px;
 }
+
+/* ── Inversion lens interactive hover rules ── */
+.group\/name:hover .group-hover\/name\:scale-100,
+.group\/name:hover [class*="group-hover/name:scale-100"] {
+  transform: translate(-50%, -50%) scale(1);
+}
+.group\/name:hover .group-hover\/name\:opacity-100,
+.group\/name:hover [class*="group-hover/name:opacity-100"] {
+  opacity: 1;
+}
+
+.group\/talk:hover .group-hover\/talk\:scale-100,
+.group\/talk:hover [class*="group-hover/talk:scale-100"] {
+  transform: translate(-50%, -50%) scale(1);
+}
+.group\/talk:hover .group-hover\/talk\:opacity-100,
+.group\/talk:hover [class*="group-hover/talk:opacity-100"] {
+  opacity: 1;
+}
+

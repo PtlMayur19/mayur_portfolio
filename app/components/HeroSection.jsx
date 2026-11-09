@@ -1,6 +1,8 @@
 "use client";
 
 import { ScaleIn, DropIn, FadeUp } from "./Animations";
+import { useInversionLens } from "./useInversionLens";
+import InversionLens from "./InversionLens";
 
 /* ── Inline doodle arrow SVG ── */
 function DoodleArrow({ flip = false, className = "w-7 h-7 sm:w-8 sm:h-8" }) {
@@ -91,6 +93,8 @@ function CircularDecoration({ side = "left" }) {
 
 /* ── Main Hero Section ── */
 export default function HeroSection() {
+  const { lensRef, onMouseMove } = useInversionLens([3, 97]);
+
   return (
     <section
       id="home"
@@ -104,7 +108,12 @@ export default function HeroSection() {
       {/* ── Content column ── */}
       <div className="relative mx-auto flex max-w-5xl w-full flex-col items-center text-center">
 
-        {/* "my name is" handwritten label */}
+        {/* Name composition block with interactive cursor negative inversion reticle */}
+        <div
+          className="group/name relative flex w-full flex-col items-center"
+          onMouseMove={onMouseMove}
+        >
+          {/* "my name is" handwritten label */}
         <FadeUp delay={0.05}>
           <div className="flex flex-col items-center select-none" style={{ color: "var(--ink)" }}>
             <p className="font-hand text-2xl sm:text-3xl md:text-4xl" aria-hidden="true">
@@ -285,6 +294,13 @@ export default function HeroSection() {
             OPEN TO NEW WORK AND GOOD PROBLEMS
           </p>
         </FadeUp>
+
+        {/* Cursor-following negative inversion reticle */}
+        <InversionLens
+          lensRef={lensRef}
+          groupHoverClass="group-hover/name:scale-100 group-hover/name:opacity-100"
+        />
+      </div>
 
         {/* Tagline */}
         <FadeUp delay={0.95} className="mt-7 sm:mt-9 max-w-3xl px-2">
