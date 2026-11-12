@@ -20,7 +20,7 @@ export const siteData = {
     github: "", // e.g. "https://github.com/mayurpatel"
     linkedin: "", // e.g. "https://linkedin.com/in/mayurpatel"
     email: "", // e.g. "hello@mayurpatel.dev"
-    resume: "", // e.g. "/files/mayur-patel-resume.pdf"
+    resume: "/Mayur_Patel_Resume.pdf",
   },
   seo: {
     title: "Mayur Patel – Software Engineer & Full Stack Developer",

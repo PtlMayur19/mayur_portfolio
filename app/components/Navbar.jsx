@@ -7,7 +7,7 @@ import { siteData } from "../../data/site";
 
 const NAV_LINKS = [
   { href: "/#home",       label: "HOME",       id: "home",       Icon: Star },
-  { href: "/#about",      label: "ABOUT",      id: "about",      Icon: User },
+  { href: "/about",       label: "ABOUT",      id: "about",      Icon: User },
   { href: "/#case-study", label: "CASE STUDY", id: "case-study", Icon: LayoutGrid },
   { href: "/#playground", label: "PLAYGROUND", id: "playground", Icon: Diamond },
 ];
@@ -32,6 +32,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeId, setActiveId]  = useState("home");
   const pathname = usePathname();
+  const isAboutPage = pathname === "/about";
   const isContactPage = pathname === "/contact";
 
   const linkedinUrl = siteData.socials?.linkedin || "#";
@@ -40,7 +41,10 @@ export default function Navbar() {
 
   /* ── Active-section tracking on homepage ── */
   useEffect(() => {
-    if (isContactPage) return;
+    if (isContactPage || isAboutPage) {
+      if (isAboutPage) setActiveId("about");
+      return;
+    }
     const ids = ["home", "about", "case-study", "playground", "contact"];
     const observer = new IntersectionObserver(
       (entries) => {
@@ -53,7 +57,7 @@ export default function Navbar() {
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
-  }, [isContactPage]);
+  }, [isContactPage, isAboutPage]);
 
   /* ── ESC closes mobile menu ── */
   useEffect(() => {
@@ -104,7 +108,7 @@ export default function Navbar() {
           {/* Desktop nav */}
           <nav className="hidden items-stretch md:flex" aria-label="Main navigation">
             {NAV_LINKS.map(({ href, label, id, Icon }) => {
-              const isActive = !isContactPage && activeId === id;
+              const isActive = isAboutPage ? id === "about" : (!isContactPage && activeId === id);
               return (
                 <a
                   key={id}
@@ -195,22 +199,27 @@ export default function Navbar() {
           aria-label="Mobile navigation"
           style={{ borderTop: "1px solid rgba(26,24,22,0.08)", backgroundColor: "var(--paper)" }}
         >
-          {NAV_LINKS.map(({ href, label, id, Icon }) => (
-            <a
-              key={id}
-              href={href}
-              onClick={close}
-              className="flex items-center gap-3 px-5 py-4 text-xs font-bold uppercase tracking-widest border-b transition-colors"
-              style={{
-                fontFamily: "var(--font-mono), 'Space Mono', monospace",
-                borderColor: "rgba(26,24,22,0.08)",
-                color: "var(--ink)",
-              }}
-            >
-              <Icon className="h-4 w-4" aria-hidden="true" />
-              {label}
-            </a>
-          ))}
+          {NAV_LINKS.map(({ href, label, id, Icon }) => {
+            const isActive = isAboutPage ? id === "about" : (!isContactPage && activeId === id);
+            return (
+              <a
+                key={id}
+                href={href}
+                onClick={close}
+                aria-current={isActive ? "page" : undefined}
+                className="flex items-center gap-3 px-5 py-4 text-xs font-bold uppercase tracking-widest border-b transition-colors"
+                style={{
+                  fontFamily: "var(--font-mono), 'Space Mono', monospace",
+                  borderColor: "rgba(26,24,22,0.08)",
+                  backgroundColor: isActive ? "var(--yellow)" : "transparent",
+                  color: "var(--ink)",
+                }}
+              >
+                <Icon className={`h-4 w-4 ${isActive ? "fill-current" : ""}`} aria-hidden="true" />
+                {label}
+              </a>
+            );
+          })}
           {!isContactPage && (
             <a
               href="/contact"
