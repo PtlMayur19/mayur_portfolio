@@ -146,7 +146,7 @@ export default function ResumeSection() {
   return (
     <section
       id="resume"
-      className="relative px-3 sm:px-6 md:px-8 py-10 sm:py-16 paper-sheet w-full overflow-hidden"
+      className="relative scroll-mt-20 px-3 sm:px-6 md:px-8 py-10 sm:py-16 paper-sheet w-full overflow-hidden"
       aria-labelledby="resume-heading"
     >
       <div className="relative mx-auto max-w-6xl">
