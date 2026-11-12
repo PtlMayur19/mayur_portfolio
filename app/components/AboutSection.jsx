@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { FadeUp, PopIn } from "./Animations";
+import { motion, useReducedMotion } from "framer-motion";
+import { FadeUp } from "./Animations";
 
 /* ── Curved Hand-Drawn Divider between sections ── */
 function CurvedDivider() {
@@ -21,7 +22,6 @@ function CurvedDivider() {
           strokeWidth="2.75"
           strokeLinecap="round"
         />
-        {/* Subtle companion sketch stroke */}
         <path
           d="M 40 28 C 220 16, 400 42, 600 26 C 800 10, 1010 36, 1160 24"
           stroke="currentColor"
@@ -34,8 +34,8 @@ function CurvedDivider() {
   );
 }
 
-/* ── Doodle Arrow pointing to "what's up" / bio ── */
-function AnnotationArrow() {
+/* ── Doodle arrow for header annotation ── */
+function HeaderDoodleArrow() {
   return (
     <svg
       viewBox="0 0 48 38"
@@ -46,7 +46,7 @@ function AnnotationArrow() {
       strokeWidth="2.2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="w-7 h-6 sm:w-8 sm:h-7 text-[var(--ink)] inline-block ml-1 translate-y-2"
+      className="w-7 h-6 sm:w-8 sm:h-7 text-[var(--ink)] inline-block ml-1 translate-y-1.5"
       aria-hidden="true"
     >
       <path d="M 6 6 Q 22 8 32 20 Q 38 28 42 32" />
@@ -55,219 +55,374 @@ function AnnotationArrow() {
   );
 }
 
-/* ── Polaroid Image Component with tape and fallback ── */
-function PolaroidPhoto({
-  src,
-  alt,
-  caption,
-  tapeColor = "cyan",
-  tapeRotate = "-2deg",
-  rotate = "-4deg",
-  className = "",
-  size = "normal",
-}) {
-  const [hasError, setHasError] = useState(false);
+/* ── Hand-drawn curved arrow pointing to profile info ── */
+function CurvedNoteArrow() {
+  return (
+    <svg
+      viewBox="0 0 60 44"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-7 h-5 sm:w-8 sm:h-6 text-[var(--ink)] inline-block select-none -scale-y-100 rotate-12"
+      aria-hidden="true"
+    >
+      <path d="M 6 36 C 22 38, 42 30, 50 12" />
+      <path d="M 38 10 L 50 11 L 52 23" />
+    </svg>
+  );
+}
 
-  const sizeClasses =
-    size === "mobile"
-      ? "w-36 h-48 sm:w-44 sm:h-56"
-      : "w-48 h-60 sm:w-56 sm:h-72 md:w-60 md:h-76 lg:w-60 lg:h-76 xl:w-68 xl:h-84";
-
+/* ── Spiral Notebook Top Binder Holes (Realistic Paper Punch) ── */
+function SpiralBinderHoles() {
   return (
     <div
-      className={`relative inline-block transition-transform duration-300 hover:scale-[1.03] hover:rotate-0 hover:z-20 ${className}`}
-      style={{ transform: `rotate(${rotate})` }}
+      className="w-full flex justify-center items-center px-4 sm:px-8 py-2.5 sm:py-3.5 border-b border-black/10 select-none overflow-hidden bg-[#FAF4E6]/90"
+      aria-hidden="true"
     >
-      {/* Washi Tape Strip */}
+      <div className="flex items-center justify-center gap-3 sm:gap-5 md:gap-6 w-full max-w-4xl overflow-hidden">
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-[#8A8A8A] border border-black/30 shadow-[inset_0_2px_2px_rgba(0,0,0,0.45)] shrink-0"
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Polaroid Photo Frame with subtle tilt, washi tape, and realistic shadow ── */
+function ProfilePolaroid() {
+  const [hasError, setHasError] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
+
+  const motionProps = shouldReduceMotion
+    ? {}
+    : {
+        whileHover: { scale: 1.025, rotate: 0, y: -4 },
+        transition: { type: "spring", stiffness: 280, damping: 20 },
+      };
+
+  return (
+    <motion.div
+      {...motionProps}
+      className="relative inline-block select-none -rotate-2 cursor-default transition-shadow"
+    >
+      {/* Washi Tape strip at top */}
       <div
-        className={`absolute -top-3 left-1/2 -translate-x-1/2 z-10 tape tape-${tapeColor}`}
-        style={{ transform: `translateX(-50%) rotate(${tapeRotate})` }}
+        className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 tape tape-cyan shadow-sm"
+        style={{ transform: "translateX(-50%) rotate(2deg)" }}
         aria-hidden="true"
       />
 
-      {/* Polaroid Card */}
-      <figure className="polaroid bg-white rounded-[2px]">
-        <div
-          className={`relative ${sizeClasses} overflow-hidden bg-[#ECE6D9] rounded-[2px] border border-black/5`}
-        >
+      {/* Polaroid Card Frame */}
+      <figure className="bg-white p-3.5 pb-5 sm:p-4 sm:pb-6 rounded-[2px] border border-black/10 shadow-[0_12px_28px_rgba(26,24,22,0.16),0_2px_6px_rgba(26,24,22,0.06)]">
+        <div className="relative w-56 h-72 sm:w-64 sm:h-80 md:w-68 md:h-84 overflow-hidden bg-[#ECE6D9] rounded-[2px] border border-black/5">
           {!hasError ? (
             <Image
-              src={src}
-              alt={alt}
+              src="/images/portrait.jpg"
+              alt="Mayur Patel - Computer Science & Engineering Student"
               fill
-              sizes="(max-width: 640px) 160px, (max-width: 1024px) 240px, 280px"
-              className="object-cover transition-transform duration-500 hover:scale-105"
+              priority
+              sizes="(max-width: 640px) 240px, (max-width: 1024px) 280px, 320px"
+              className="object-cover object-top transition-transform duration-500 hover:scale-105"
               onError={() => setHasError(true)}
             />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-gradient-to-br from-[#F5EADB] to-[#E5D5C1] text-[var(--ink)]">
               <span className="font-display text-3xl mb-1 opacity-50">✦</span>
-              <p className="font-mono text-[10px] uppercase tracking-wider font-bold opacity-75">
-                {caption}
+              <p className="font-mono text-xs uppercase tracking-wider font-bold opacity-75">
+                Mayur Patel
               </p>
             </div>
           )}
         </div>
-        <figcaption>{caption}</figcaption>
+
+        {/* Handwritten Label and Annotation below photo */}
+        <figcaption className="mt-3.5 text-center">
+          <span className="font-hand text-2xl sm:text-[1.7rem] font-bold text-[var(--ink)] tracking-wide block leading-tight">
+            MAYUR PATEL
+          </span>
+          <span className="font-mono-label text-[10px] sm:text-[11px] text-[var(--ink)]/65 tracking-widest block mt-1">
+            CLASS OF 2028
+          </span>
+        </figcaption>
       </figure>
-    </div>
+    </motion.div>
   );
 }
 
-/* ── Skill Tag Data ── */
-const SKILL_TAGS = [
-  { name: "Full Stack", bg: "var(--yellow)", color: "var(--ink)", rotate: -2 },
-  { name: "Backend", bg: "var(--green)", color: "#FFFFFF", rotate: 3 },
-  { name: "React", bg: "var(--pink)", color: "#FFFFFF", rotate: -1.5 },
-  { name: "Next.js", bg: "var(--blue)", color: "#FFFFFF", rotate: 2.5 },
-  { name: "Node.js", bg: "var(--lavender)", color: "var(--ink)", rotate: -3 },
-  { name: "AWS", bg: "var(--orange)", color: "#FFFFFF", rotate: 2 },
-  { name: "Photography", bg: "var(--yellow)", color: "var(--ink)", rotate: -1.5 },
+/* ── Academic Snapshot Data ── */
+const ACADEMIC_SNAPSHOT = [
+  {
+    label: "CGPA",
+    value: "7.8",
+    isLargeNum: true,
+    bg: "#FFF9E6",
+    accent: "var(--yellow)",
+    rotate: "-0.5deg",
+  },
+  {
+    label: "BATCH",
+    value: "2024 – 2028",
+    isLargeNum: false,
+    bg: "#FFF0F5",
+    accent: "var(--pink)",
+    rotate: "0.5deg",
+  },
+  {
+    label: "DEGREE",
+    value: "B.Tech CSE",
+    isLargeNum: false,
+    bg: "#F0F5FF",
+    accent: "var(--blue)",
+    rotate: "-0.5deg",
+  },
+  {
+    label: "LOCATION",
+    value: "Gujarat, India",
+    isLargeNum: false,
+    bg: "#F2FAF4",
+    accent: "var(--green)",
+    rotate: "0.5deg",
+  },
+];
+
+/* ── Interest Tags Data ── */
+const INTEREST_TAGS = [
+  { name: "Software Engineering", bg: "var(--yellow)", color: "var(--ink)", rotate: -1.5 },
+  { name: "Full Stack Development", bg: "var(--pink)", color: "#FFFFFF", rotate: 1.5 },
+  { name: "Backend Engineering", bg: "var(--blue)", color: "#FFFFFF", rotate: -1 },
 ];
 
 export default function AboutSection() {
   return (
     <section
       id="about"
-      className="relative px-4 sm:px-6 md:px-8 pb-16 sm:pb-24 paper-sheet w-full overflow-hidden"
+      className="relative scroll-mt-20 px-4 sm:px-6 md:px-8 pb-16 sm:pb-24 paper-sheet w-full overflow-hidden"
       aria-labelledby="about-heading"
     >
       {/* Hand-drawn curved divider separating Home and About */}
       <CurvedDivider />
 
-      <div className="relative mx-auto max-w-7xl">
-        {/* ── Handwritten "about me!" annotation near upper-left ── */}
-        <div className="mb-3 sm:mb-5 pl-2 sm:pl-6 md:pl-10">
+      <div className="relative mx-auto max-w-6xl">
+        {/* ── Section Header ── */}
+        <div className="flex flex-col items-center text-center px-4 mb-10 sm:mb-14">
+          {/* Small handwritten annotation: "about me!" */}
           <FadeUp delay={0.05}>
-            <div className="inline-flex items-center -rotate-6 select-none">
-              <span
-                id="about-heading"
-                className="font-hand text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold"
-                style={{ color: "var(--ink)" }}
-              >
+            <div className="inline-flex items-center -rotate-3 select-none mb-1 sm:mb-2">
+              <span className="font-hand text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--ink)]">
                 about me!
               </span>
-              <AnnotationArrow />
+              <HeaderDoodleArrow />
             </div>
           </FadeUp>
-        </div>
 
-        {/* ── Centered hand-drawn rectangular label: "what's up" ── */}
-        <div className="flex justify-center mb-6 sm:mb-10">
+          {/* Large Pixelify Sans heading: "ABOUT" */}
           <FadeUp delay={0.1}>
-            <div
-              className="px-6 py-1.5 sm:px-8 sm:py-2 bg-white/75 border-[2.5px] border-[var(--ink)] shadow-[2px_3px_0_var(--ink)] -rotate-1 select-none"
-              style={{
-                borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px",
-              }}
+            <h2
+              id="about-heading"
+              className="font-display text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight text-[var(--ink)] uppercase leading-none select-none my-2 sm:my-3"
             >
-              <h2
-                className="font-hand text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-wide"
-                style={{ color: "var(--ink)" }}
-              >
-                what&apos;s up
-              </h2>
-            </div>
+              ABOUT
+            </h2>
           </FadeUp>
-        </div>
 
-        {/* ── Tablet & Mobile Photo Row (< lg) ── */}
-        <div className="flex lg:hidden justify-center items-center gap-4 sm:gap-6 mb-8 pt-2">
+          {/* Small yellow torn-paper label: "PROFILE" */}
           <FadeUp delay={0.15}>
-            <PolaroidPhoto
-              src="/images/portrait.jpg"
-              alt="Portrait of Mayur Patel"
-              caption="mayur.jpg"
-              tapeColor="cyan"
-              tapeRotate="-3deg"
-              rotate="-3deg"
-              size="mobile"
-            />
-          </FadeUp>
-          <FadeUp delay={0.2}>
-            <PolaroidPhoto
-              src="/images/lifestyle.jpg"
-              alt="Lifestyle photo outside coding"
-              caption="outside coding 📸"
-              tapeColor="yellow"
-              tapeRotate="3deg"
-              rotate="4deg"
-              size="mobile"
-            />
+            <div className="mt-2 inline-block select-none">
+              <span
+                className="torn-tag-sm"
+                style={{
+                  backgroundColor: "var(--yellow)",
+                  color: "var(--ink)",
+                  transform: "rotate(-1.5deg)",
+                }}
+              >
+                PROFILE
+              </span>
+            </div>
           </FadeUp>
         </div>
 
-        {/* ── Desktop Editorial Composition (lg+) ── */}
-        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-start">
+        {/* ── Main Centered Notebook-Paper Container ── */}
+        <FadeUp delay={0.2}>
+          <div
+            className="relative mx-auto bg-[#FDF9F0] border-[2.5px] border-[var(--ink)] shadow-[5px_7px_0_var(--ink)] overflow-hidden rounded-[20px] sm:rounded-[36px_14px_30px_14px/14px_30px_14px_36px]"
+          >
+            {/* Corner Washi Tape Accents pinning the sheet */}
+            <div
+              className="absolute -top-3 -left-3 tape tape-yellow z-20 pointer-events-none -rotate-45 hidden sm:block opacity-75"
+              aria-hidden="true"
+            />
+            <div
+              className="absolute -top-3 -right-3 tape tape-pink z-20 pointer-events-none rotate-45 hidden sm:block opacity-75"
+              aria-hidden="true"
+            />
 
-          {/* Left Column: Taped Polaroid Portrait (Desktop only) */}
-          <div className="hidden lg:flex lg:col-span-3 justify-start pt-6">
-            <FadeUp delay={0.15}>
-              <PolaroidPhoto
-                src="/images/portrait.jpg"
-                alt="Portrait of Mayur Patel"
-                caption="mayur.jpg"
-                tapeColor="cyan"
-                tapeRotate="-3deg"
-                rotate="-4deg"
-              />
-            </FadeUp>
-          </div>
+            {/* Notebook Spiral Binder Notches along the top edge */}
+            <SpiralBinderHoles />
 
-          {/* Center Column: Biography + Colorful Torn-edge Skill Tags */}
-          <div className="lg:col-span-6 flex flex-col items-center text-center px-2 sm:px-4">
-            {/* Large handwritten biography */}
-            <FadeUp delay={0.15}>
-              <p
-                className="font-hand text-2xl sm:text-3xl md:text-4xl lg:text-[2.2rem] xl:text-[2.4rem] leading-[1.55] sm:leading-[1.6] md:leading-[1.65] font-medium tracking-wide"
-                style={{ color: "var(--ink)" }}
-              >
-                Hey, I&apos;m Mayur — a Computer Science student at CHARUSAT who
-                enjoys turning ideas into real products. I&apos;m interested in
-                full-stack development, backend engineering, and understanding
-                how software works behind the scenes. Outside coding, I enjoy
-                photography, yoga, and exploring new things.
-              </p>
-            </FadeUp>
+            {/* Inner Content Padding */}
+            <div className="p-5 sm:p-8 md:p-10 lg:p-12">
+              {/* Desktop Two-Column Composition */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-start">
 
-            {/* Colorful torn-edge skill tags */}
-            <div className="mt-8 sm:mt-12 w-full">
-              <FadeUp delay={0.25}>
-                <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-4.5">
-                  {SKILL_TAGS.map((tag, idx) => (
-                    <PopIn key={tag.name} delay={0.05 * idx}>
-                      <span
-                        className="torn-tag cursor-default"
-                        style={{
-                          backgroundColor: tag.bg,
-                          color: tag.color,
-                          transform: `rotate(${tag.rotate}deg)`,
-                        }}
-                      >
-                        {tag.name}
+                {/* ── LEFT COLUMN: Profile Photograph & Handwritten Note ── */}
+                <div className="lg:col-span-5 flex flex-col items-center justify-start text-center">
+                  {/* Polaroid Frame */}
+                  <ProfilePolaroid />
+
+                  {/* Personal Touch Annotation below photo with hand-drawn arrow */}
+                  <div className="mt-5 sm:mt-6 flex flex-col items-center select-none">
+                    <div className="inline-flex items-center gap-1.5 -rotate-2 text-[var(--ink)]">
+                      <span className="font-hand text-xl sm:text-2xl font-bold text-[var(--ink)]">
+                        &ldquo;building, learning &amp; exploring.&rdquo;
                       </span>
-                    </PopIn>
-                  ))}
+                    </div>
+                    <div className="mt-1 flex items-center justify-center text-[var(--ink)]/75">
+                      <CurvedNoteArrow />
+                      <span className="font-hand text-sm sm:text-base font-semibold text-[var(--pink)] ml-1.5 -rotate-2">
+                        always curious ✦
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </FadeUp>
+
+                {/* ── RIGHT COLUMN: Personal & Academic Information ── */}
+                <div className="lg:col-span-7 flex flex-col space-y-6 sm:space-y-7 text-left">
+
+                  {/* 1. Header & Introduction */}
+                  <div>
+                    <h3 className="font-hand text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--ink)] tracking-tight leading-tight">
+                      Hi, I&apos;m Mayur!
+                    </h3>
+
+                    <p className="font-mono text-xs sm:text-sm font-bold tracking-[0.16em] uppercase text-[var(--blue)] mt-1.5 mb-3 flex items-center gap-1.5">
+                      <span className="text-[var(--pink)] font-display text-base">✦</span>
+                      COMPUTER SCIENCE &amp; ENGINEERING STUDENT
+                    </p>
+
+                    <p className="font-body text-sm sm:text-base text-[var(--ink)]/85 leading-relaxed font-normal">
+                      I&apos;m Mayur Patel, a Computer Science and Engineering student at DEPSTAR,
+                      CHARUSAT University. I enjoy building web applications, exploring backend
+                      technologies and turning ideas into practical digital experiences.
+                      I&apos;m continuously learning, experimenting with new technologies and
+                      improving my software engineering skills.
+                    </p>
+                  </div>
+
+                  {/* 2. EDUCATION Block */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[var(--green)] inline-block" />
+                      <h4 className="font-mono-label text-xs sm:text-sm text-[var(--ink)] tracking-widest">
+                        EDUCATION
+                      </h4>
+                      <div className="h-[1px] flex-1 bg-[var(--ink)]/15 border-b border-dashed border-[var(--ink)]/30" />
+                    </div>
+
+                    <div
+                      className="bg-white/80 border-2 border-[var(--ink)] p-4 sm:p-5 rounded-[4px] shadow-[3px_3px_0_var(--ink)] relative"
+                      style={{
+                        borderRadius: "15px 4px 12px 4px / 4px 12px 4px 15px",
+                      }}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 sm:gap-2">
+                        <div className="font-body font-bold text-base sm:text-lg text-[var(--ink)]">
+                          B.Tech – Computer Science &amp; Engineering
+                        </div>
+                        <span className="font-mono text-xs sm:text-sm font-bold text-[var(--ink)] bg-[var(--yellow)]/50 border border-[var(--ink)]/40 px-2.5 py-0.5 rounded-sm self-start sm:self-auto shrink-0">
+                          2024 – 2028
+                        </span>
+                      </div>
+
+                      <p className="font-body text-sm sm:text-base text-[var(--ink)]/80 mt-1">
+                        DEPSTAR, CHARUSAT University
+                      </p>
+
+                      <div className="mt-3 flex items-center gap-2">
+                        <span className="font-mono text-[11px] font-semibold text-[var(--ink)]/75 uppercase tracking-wider bg-[#EDE7D6] px-2.5 py-0.5 rounded-full border border-black/10 inline-flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[var(--green)]" />
+                          Undergraduate Student
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. ACADEMIC SNAPSHOT */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[var(--pink)] inline-block" />
+                      <h4 className="font-mono-label text-xs sm:text-sm text-[var(--ink)] tracking-widest">
+                        ACADEMIC SNAPSHOT
+                      </h4>
+                      <div className="h-[1px] flex-1 bg-[var(--ink)]/15 border-b border-dashed border-[var(--ink)]/30" />
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+                      {ACADEMIC_SNAPSHOT.map((item) => (
+                        <div
+                          key={item.label}
+                          className="border-2 border-[var(--ink)] rounded-[2px] shadow-[2px_2.5px_0_var(--ink)] p-2.5 sm:p-3 text-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3px_3.5px_0_var(--ink)] cursor-default"
+                          style={{
+                            backgroundColor: item.bg,
+                            transform: `rotate(${item.rotate})`,
+                          }}
+                        >
+                          <span className="font-mono-label text-[10px] text-[var(--ink)]/60 block mb-1">
+                            {item.label}
+                          </span>
+                          <span
+                            className={
+                              item.isLargeNum
+                                ? "font-display text-2xl sm:text-3xl font-bold text-[var(--ink)] leading-none block"
+                                : item.label === "BATCH"
+                                ? "font-mono text-xs sm:text-[13px] md:text-sm font-bold text-[var(--ink)] leading-tight block pt-1 whitespace-nowrap"
+                                : "font-mono text-xs sm:text-sm font-bold text-[var(--ink)] leading-tight block pt-1"
+                            }
+                          >
+                            {item.value}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 4. CURRENT INTERESTS */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[var(--yellow)] inline-block" />
+                      <h4 className="font-mono-label text-xs sm:text-sm text-[var(--ink)] tracking-widest">
+                        CURRENTLY INTERESTED IN
+                      </h4>
+                      <div className="h-[1px] flex-1 bg-[var(--ink)]/15 border-b border-dashed border-[var(--ink)]/30" />
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-1">
+                      {INTEREST_TAGS.map((tag) => (
+                        <span
+                          key={tag.name}
+                          className="torn-tag-sm cursor-default select-none shadow-sm transition-transform duration-200 hover:scale-105"
+                          style={{
+                            backgroundColor: tag.bg,
+                            color: tag.color,
+                            transform: `rotate(${tag.rotate}deg)`,
+                          }}
+                        >
+                          {tag.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* Right Column: Taped Lifestyle Photo (Desktop only) */}
-          <div className="hidden lg:flex lg:col-span-3 justify-end pt-16">
-            <FadeUp delay={0.25}>
-              <PolaroidPhoto
-                src="/images/lifestyle.jpg"
-                alt="Lifestyle photo outside coding"
-                caption="outside coding 📸"
-                tapeColor="yellow"
-                tapeRotate="4deg"
-                rotate="5deg"
-              />
-            </FadeUp>
-          </div>
-
-        </div>
+        </FadeUp>
       </div>
     </section>
   );
